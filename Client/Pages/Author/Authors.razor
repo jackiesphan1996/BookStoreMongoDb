@@ -1,0 +1,95 @@
+﻿@page "/authors"
+@namespace BookStoreMongoDb.Client.Pages.Author
+@using BookStoreMongoDb.Shared
+
+<div>
+    @*<PageContainer Title="Employees">
+            <Breadcrumb>
+                <Breadcrumb>
+                    <BreadcrumbItem>Home</BreadcrumbItem>
+                    <BreadcrumbItem>Authors</BreadcrumbItem>
+                </Breadcrumb>
+            </Breadcrumb>
+            <ChildContent>
+
+            </ChildContent>
+        </PageContainer>*@
+    <div class="standardList">
+        <Card Class="listCard"
+              Title="Manage Authors"
+              Style="margin-top: 24px;"
+              BodyStyle="padding: 0 32px 40px 32px">
+            <Extra>
+                <div class="extraContent">
+                    <Search Class="extraContentSearch" Placeholder="Search..." @bind-Value="@SearchText" OnSearch="GetAllAsync" />
+                </div>
+            </Extra>
+            <ChildContent>
+                <Button Type="primary" OnClick="CreateAuthor">Create</Button>
+                <br />
+                <br />
+                <Table DataSource="@_authors" TItem="GetAllAuthorsViewModel"
+                       Total="@TotalCount"
+                       Loading="@IsLoading"
+                       PageIndex="@Page"
+                       PageSize="@PageSize"
+                       OnPageIndexChange="HandlePageIndexChanged"
+                       OnPageSizeChange="HandlePageSizeChange">
+                    <AntDesign.Column TData="string"
+                                      Title="Name"
+                                      @bind-Field="context.Name" />
+                    <AntDesign.Column TData="string"
+                                      Title="Birth Date">
+                        @context.BirthDate.ToString("dd-MM-yyyy HH:mm:ss")
+                    </AntDesign.Column>
+
+                    <AntDesign.Column TData="string"
+                                      Title="Description"
+                                      @bind-Field="context.ShortBio" />
+
+                    <AntDesign.Column Title="Action" Field="context.Id">
+                        <Dropdown Placement="@PlacementType.BottomCenter">
+                            <Overlay>
+                                <Menu>
+                                    <MenuItem OnClick="(() => Edit(context.Id))">
+                                        Edit
+                                    </MenuItem>
+                                    <MenuItem OnClick="(() => ShowDeleteConfirm(context))">
+                                        Delete
+                                    </MenuItem>
+                                </Menu>
+                            </Overlay>
+                            <ChildContent>
+                                <Button Type="primary">Actions</Button>
+                            </ChildContent>
+                        </Dropdown>
+                    </AntDesign.Column>
+                </Table>
+                <Modal Title="@AuthorDialogTitle"
+                       Visible="@AuthorDialogVisible"
+                       OnOk="@HandleAuthorDialogOk"
+                       OnCancel="@HandleAuthorDialogCancel">
+                    <Form @ref="@AuthorDialogForm"
+                          Model="@_author"
+                          LabelColSpan="8"
+                          WrapperColSpan="16">
+                        @{ if (!string.IsNullOrEmpty(@context.Id))
+                            {
+                                <FormItem Label="Department Id">
+                                    <Input @bind-Value="@context.Id" Disabled />
+                                </FormItem> } }
+                        <FormItem Label="Name">
+                            <Input @bind-Value="@context.Name" />
+                        </FormItem>
+                        <FormItem Label="Date Of Birth">
+                            <DatePicker @bind-Value="@context.BirthDate" TValue="DateTime" Picker="@DatePickerType.Date" />
+                        </FormItem>
+                        <FormItem Label="Description">
+                            <Input @bind-Value="@context.ShortBio" />
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </ChildContent>
+        </Card>
+    </div>
+</div>
